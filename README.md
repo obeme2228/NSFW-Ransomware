@@ -8,7 +8,7 @@
 
 ---
 
-![nemesis_millar](https://github.com/user-attachments/assets/89c34e28-ed0c-47bf-a9a1-73ace104e532)
+![icons8-biohazard-48](https://github.com/user-attachments/assets/c65834b1-c51e-4062-b31d-2a0a161b9e89)
 
 ---
 
