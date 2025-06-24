@@ -1,6 +1,6 @@
 
 
-# N3m3s1s-Ransomware: Fileless Ransomware Simulation & Detection Research (PoC)
+# NSFW-Ransomware: Fileless Ransomware Simulation & Detection Research (PoC)
 
 > **Warning**  
 > This project is **strictly for educational, authorized research, and penetration testing in isolated lab environments**.  
