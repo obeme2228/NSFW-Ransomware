@@ -1,0 +1,12 @@
+title: Registry Persistence via Run Key
+logsource:
+  product: windows
+  service: sysmon
+  category: registry_set
+detection:
+  selection:
+    TargetObject|contains:
+      - "\Software\Microsoft\Windows\CurrentVersion\Run"
+  condition: selection
+level: medium
+description: Detects modifications to registry keys used for persistence.

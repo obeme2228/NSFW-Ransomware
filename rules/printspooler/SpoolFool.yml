@@ -1,0 +1,28 @@
+title: SpoolFool Exploitation - CVE-2022-21999
+id: 199d72cf-b1b7-4477-9e11-36f79b91c1b4
+status: experimental
+description: Detects signs of local privilege escalation via SpoolFool vulnerability
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  selection:
+    Image|endswith:
+      - '\cmd.exe'
+      - '\powershell.exe'
+    CommandLine|contains:
+      - 'icacls'
+      - 'spool\drivers'
+      - 'takeown'
+      - 'cacls'
+  condition: selection
+fields:
+  - Image
+  - CommandLine
+  - ParentImage
+  - User
+level: high
+tags:
+  - attack.privilege_escalation
+  - cve.2022.21999
+  - spoolfool

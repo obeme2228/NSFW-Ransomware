@@ -1,0 +1,9 @@
+Technique ID,Technique Name,Data Sources,Sysmon Events,Sigma Rule Example
+T1059.001,PowerShell Execution,"Process creation, Script execution, Command-line arguments","1, 4104",sysmon_susp_powershell_enc_command.yml
+T1547.001,Registry Run Key Persistence,"Registry key modification","13",sysmon_persistence_registry.yml
+T1021.002,SMB/Remote Services,"Network connection, Authentication logs","3, 4624",N/A
+T1055.001,Process Injection,"Memory access, DLL load","7, 10",N/A
+T1569.002,Service Execution,"Service creation, Process creation","1, 7045",N/A
+T1204.002,Malicious File Execution,"File creation, Process creation","1, 11",sysmon_susp_script_exec.yml
+T1218.011,Rundll32 Abuse,"Process creation","1",sysmon_rundll_suspicious.yml
+T1053.005,Scheduled Task Creation,"Task registration, Process creation","1",N/A

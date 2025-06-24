@@ -1,0 +1,10 @@
+title: MSHTA Remote Script Execution
+logsource:
+  product: windows
+  service: sysmon
+detection:
+  selection:
+    Image|endswith: 'mshta.exe'
+    CommandLine|contains: 'http'
+  condition: selection
+level: high

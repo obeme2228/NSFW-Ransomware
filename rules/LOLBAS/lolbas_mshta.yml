@@ -1,0 +1,22 @@
+title: Suspicious Mshta Execution
+id: b26dcd2b-2224-49f5-9b7f-e10c21e65a3a
+description: Detects mshta.exe used with remote script or suspicious command
+status: experimental
+logsource:
+  product: windows
+  service: sysmon
+  category: process_creation
+detection:
+  selection:
+    Image|endswith: "\mshta.exe"
+    CommandLine|contains:
+      - "http"
+      - ".hta"
+      - "vbscript"
+  condition: selection
+level: high
+tags:
+  - attack.defense_evasion
+  - attack.t1218.005
+references:
+  - https://lolbas-project.github.io/lolbas/Binaries/Mshta/

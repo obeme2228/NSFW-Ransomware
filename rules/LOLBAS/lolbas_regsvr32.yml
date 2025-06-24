@@ -1,0 +1,20 @@
+title: Regsvr32 Suspicious Use
+id: 77f3e993-b6c4-41a3-808f-408b6c3b8f95
+description: Detects regsvr32 used to execute remote scripts or COM object
+logsource:
+  product: windows
+  service: sysmon
+  category: process_creation
+detection:
+  selection:
+    Image|endswith: "\regsvr32.exe"
+    CommandLine|contains:
+      - "scrobj.dll"
+      - "http"
+  condition: selection
+level: high
+tags:
+  - attack.defense_evasion
+  - attack.t1218.010
+references:
+  - https://lolbas-project.github.io/lolbas/Binaries/Regsvr32/

@@ -1,0 +1,10 @@
+title: Registry Run Key Persistence
+logsource:
+  product: windows
+  service: sysmon
+detection:
+  selection:
+    EventID: 13
+    TargetObject|contains: "CurrentVersion\\Run"
+  condition: selection
+level: medium

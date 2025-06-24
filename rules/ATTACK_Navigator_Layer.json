@@ -1,0 +1,81 @@
+{
+    "version": "4.3",
+    "name": "Sysmon + Sigma Coverage",
+    "description": "Coverage of selected ATT&CK techniques using Sysmon and Sigma rules",
+    "domain": "enterprise-attack",
+    "techniques": [
+        {
+            "techniqueID": "T1059.001",
+            "score": 100,
+            "color": "#ff6666"
+        },
+        {
+            "techniqueID": "T1547.001",
+            "score": 90,
+            "color": "#ff9966"
+        },
+        {
+            "techniqueID": "T1021.002",
+            "score": 80,
+            "color": "#ffcc66"
+        },
+        {
+            "techniqueID": "T1055.001",
+            "score": 70,
+            "color": "#ffff66"
+        },
+        {
+            "techniqueID": "T1569.002",
+            "score": 60,
+            "color": "#ccff66"
+        },
+        {
+            "techniqueID": "T1204.002",
+            "score": 85,
+            "color": "#99ff66"
+        },
+        {
+            "techniqueID": "T1218.011",
+            "score": 75,
+            "color": "#66ff99"
+        },
+        {
+            "techniqueID": "T1053.005",
+            "score": 65,
+            "color": "#66ffcc"
+        }
+    ],
+    "gradient": {
+        "colors": [
+            "#ffffff",
+            "#66ff66"
+        ],
+        "minValue": 0,
+        "maxValue": 100
+    },
+    "legendItems": [
+        {
+            "label": "Full Coverage",
+            "color": "#ff6666"
+        },
+        {
+            "label": "Partial Coverage",
+            "color": "#ffff66"
+        },
+        {
+            "label": "Observed",
+            "color": "#66ffcc"
+        }
+    ],
+    "metadata": [],
+    "filters": {
+        "platforms": [
+            "Windows"
+        ]
+    },
+    "layout": {
+        "layout": "side"
+    },
+    "hideDisabled": false,
+    "selectTechniquesAcrossTactics": true
+}
