@@ -1,0 +1,13 @@
+winlogbeat.event_logs:
+  - name: Application
+  - name: Security
+  - name: System
+  - name: Microsoft-Windows-PowerShell/Operational
+  - name: Microsoft-Windows-Sysmon/Operational
+    processors:
+      - drop_event.when.not.or:
+          - equals.event_id: 1
+          - equals.event_id: 3
+          - equals.event_id: 7
+          - equals.event_id: 10
+          - equals.event_id: 11

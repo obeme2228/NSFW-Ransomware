@@ -1,0 +1,24 @@
+title: LockBit 3.0 Suspicious PowerShell Execution
+id: 9f8d7c1e-1c2a-4a64-9f33-3a11b99e1234
+status: experimental
+description: Detects suspicious PowerShell usage consistent with LockBit 3.0 obfuscated commands
+author: YourName
+date: 2025-06-23
+logsource:
+    product: windows
+    service: sysmon
+detection:
+    selection:
+        Image|endswith: '\powershell.exe'
+        CommandLine|contains|all:
+          - '-EncodedCommand'
+          - '-NoProfile'
+    condition: selection
+fields:
+    - CommandLine
+    - Image
+level: high
+tags:
+    - attack.execution
+    - attack.t1059.001
+    - lockbit3
