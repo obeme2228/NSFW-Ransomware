@@ -1,0 +1,2 @@
+﻿#define BLU3_API __declspec(dllexport)
+#define BLU3_API __declspec(dllimport)

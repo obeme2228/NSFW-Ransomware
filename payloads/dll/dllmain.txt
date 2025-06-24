@@ -1,0 +1,1 @@
+heres for relfective dll injection with rundll32.exe for nsfw.dll backdoor access and force pop up timed ransom note + lolbin commands for data destruction 
