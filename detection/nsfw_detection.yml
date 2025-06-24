@@ -1,0 +1,70 @@
+title: NSFW Ransomware - Enhanced Threat Detection Rules
+id: f79a2a9b-1a7e-4af2-b43b-nsfw-enhanced
+status: experimental
+author: Q / AP3X
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  encoded_powershell:
+    CommandLine|contains:
+      - 'powershell'
+      - '-enc'
+      - '-EncodedCommand'
+  shadow_copy_deletion:
+    CommandLine|contains:
+      - 'vssadmin delete shadows'
+      - 'wmic shadowcopy delete'
+      - 'wbadmin delete systemstatebackup'
+  suspicious_extensions:
+    TargetFilename|endswith:
+      - '.nsfw'
+      - '.encrypted'
+  rapid_file_mod:
+    Image|endswith:
+      - 'nsfw.exe'
+    EventID: 11
+  registry_deletion:
+    CommandLine|contains:
+      - 'reg delete'
+  disable_services:
+    CommandLine|contains:
+      - 'sc stop'
+  reflective_dll_injection:
+    CommandLine|contains:
+      - 'VirtualAllocEx'
+      - 'WriteProcessMemory'
+      - 'CreateRemoteThread'
+  fodhelper_uac_bypass:
+    CommandLine|contains:
+      - 'fodhelper.exe'
+  wevtutil_logs_disabled:
+    CommandLine|contains:
+      - 'wevtutil sl Security /e:false'
+      - 'wevtutil sl System /e:false'
+      - 'wevtutil sl Application /e:false'
+  scheduled_task_persistence:
+    CommandLine|contains:
+      - 'schtasks /Create'
+  winlogon_registry_persistence:
+    CommandLine|contains:
+      - 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Winlogon'
+  condition: encoded_powershell or shadow_copy_deletion or suspicious_extensions or rapid_file_mod or registry_deletion or disable_services or reflective_dll_injection or fodhelper_uac_bypass or wevtutil_logs_disabled or scheduled_task_persistence or winlogon_registry_persistence
+fields:
+  - CommandLine
+  - ParentImage
+  - TargetFilename
+  - EventID
+falsepositives:
+  - Backup or automation scripts
+  - Admin tools
+level: critical
+description: |
+  Detects behavioral indicators aligned with NSFW-Ransomware, enhanced to include reflective DLL injection routines, UAC bypass via fodhelper, registry and scheduled task persistence, and system log disabling.
+references:
+  - https://github.com/P1rat3L00t/NSFW-Ransomware
+  - https://attack.mitre.org/techniques/T1055/
+  - https://attack.mitre.org/techniques/T1088/
+  - https://attack.mitre.org/techniques/T1486/
+  - https://attack.mitre.org/techniques/T1490/
+  - https://attack.mitre.org/techniques/T1027/
