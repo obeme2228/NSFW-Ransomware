@@ -1,0 +1,16 @@
+
+<Sysmon schemaversion="4.50">
+  <EventFiltering>
+    <ProcessCreate onmatch="include">
+      <CommandLine condition="contains">powershell</CommandLine>
+      <CommandLine condition="contains">-enc</CommandLine>
+    </ProcessCreate>
+    <FileCreate onmatch="include">
+      <TargetFilename condition="end with">.nsfw</TargetFilename>
+      <TargetFilename condition="end with">.encrypted</TargetFilename>
+    </FileCreate>
+    <ProcessTerminate onmatch="include">
+      <Image condition="end with">nsfw.exe</Image>
+    </ProcessTerminate>
+  </EventFiltering>
+</Sysmon>

@@ -1,0 +1,49 @@
+
+title: NSFW Ransomware - Threat Detection Rules
+id: b6fc3f9b-1270-43c7-ae30-nsfw1234
+status: experimental
+author: Q / AP3X
+logsource:
+  category: process_creation
+  product: windows
+detection:
+  encoded_powershell:
+    CommandLine|contains:
+      - 'powershell'
+      - '-enc'
+      - '-EncodedCommand'
+  shadow_copy_deletion:
+    CommandLine|contains:
+      - 'vssadmin delete shadows'
+      - 'wmic shadowcopy delete'
+      - 'wbadmin delete systemstatebackup'
+  suspicious_extensions:
+    TargetFilename|endswith:
+      - '.nsfw'
+      - '.encrypted'
+  rapid_file_mod:
+    Image|endswith:
+      - 'nsfw.exe'
+    EventID: 11
+  registry_deletion:
+    CommandLine|contains:
+      - 'reg delete'
+  disable_services:
+    CommandLine|contains:
+      - 'sc stop'
+  condition: encoded_powershell or shadow_copy_deletion or suspicious_extensions or rapid_file_mod or registry_deletion or disable_services
+fields:
+  - CommandLine
+  - ParentImage
+  - TargetFilename
+  - EventID
+falsepositives:
+  - Backup or automation scripts
+level: high
+description: |
+  Detects key behavioral indicators consistent with NSFW-Ransomware, including encoded PowerShell, mass file encryption, registry or service tampering, and shadow copy deletion.
+references:
+  - https://github.com/P1rat3L00t/NSFW-Ransomware
+  - https://attack.mitre.org/techniques/T1486/
+  - https://attack.mitre.org/techniques/T1490/
+  - https://attack.mitre.org/techniques/T1027/
