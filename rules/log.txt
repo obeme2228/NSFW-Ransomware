@@ -1,2 +1,0 @@
-wevtutil epl Microsoft-Windows-Sysmon/Operational sysmon.evtx
-
