@@ -83,6 +83,7 @@ This simulation mimics the lifecycle of a modern, stealthy ransomware operation:
 * Execution examples provided below—adjust for isolated testing environments only
 
 ---
+![icons8-biohazard-48](https://github.com/user-attachments/assets/4b4fb9b6-7181-43c6-b2ec-adb150bb4601)
 
 ## 🔧 Attack Simulation (PowerShell)
 
