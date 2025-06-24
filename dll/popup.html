@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Peekaboo</title>
+    <style>
+        body {
+            background-color: black;
+            color: red;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            padding: 40px;
+        }
+
+        h1 {
+            color: yellow;
+            font-size: 40px;
+        }
+
+        .jester {
+            width: 120px;
+            margin-bottom: 20px;
+        }
+
+        .content {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .btc-address {
+            font-weight: bold;
+            color: #ff4d4d;
+            font-size: 20px;
+            margin: 10px 0;
+        }
+
+        .copy-btn {
+            background-color: red;
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            margin: 5px;
+        }
+
+        #countdown {
+            font-size: 24px;
+            color: white;
+            margin-top: 20px;
+        }
+
+        .filelist {
+            background: #111;
+            border: 1px solid red;
+            padding: 15px;
+            margin-top: 30px;
+            text-align: left;
+            color: #ccc;
+        }
+
+        .keybox, .commbox {
+            margin-top: 20px;
+        }
+
+        .input-field {
+            width: 60%;
+            padding: 10px;
+            border: 2px solid red;
+            background: black;
+            color: red;
+            font-size: 16px;
+        }
+
+        .submit-btn {
+            background: darkred;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        .footer {
+            margin-top: 50px;
+            font-size: 12px;
+            color: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <img src="3d4e03ff-4763-4a4b-a0df-327371a22313.png" class="jester" alt="Jester Logo">
+    <h1>Your Files Have Been Encrypted!</h1>
+    
+    <div class="content">
+        <p>If you're reading this, your files are no longer accessible. Do not waste time—decryption without our tool is impossible.</p>
+        <p><b>We require $300 in Bitcoin to restore access.</b></p>
+
+        <div class="btc-address">BTC Address 1: 1BitcoinWalletAddress12345</div>
+        <button class="copy-btn" onclick="copyText('1BitcoinWalletAddress12345')">Copy</button><br>
+        <div class="btc-address">BTC Address 2: 1BackupBitcoinWallet67890</div>
+        <button class="copy-btn" onclick="copyText('1BackupBitcoinWallet67890')">Copy</button>
+
+        <div id="countdown">Time left before price doubles: <span id="timer">01:59:59</span></div>
+
+        <div class="keybox">
+            <p>Enter your Personal Decryption Key</p>
+            <input type="text" class="input-field" placeholder="XXXX-XXXX-XXXX" />
+            <button class="submit-btn">Verify</button>
+        </div>
+
+        <div class="commbox">
+            <p>Need help? Leave a message.</p>
+            <textarea rows="4" class="input-field" placeholder="Describe your issue..."></textarea><br>
+            <button class="submit-btn">Send</button>
+        </div>
+
+        <div class="filelist">
+            <p><strong>Locked Files:</strong></p>
+            <ul>
+                <li>C:\Users\JohnDoe\Documents\Tax2024.pdf</li>
+                <li>C:\Users\JohnDoe\Pictures\Family.jpg</li>
+                <li>C:\Users\JohnDoe\Work\QuarterlyReport.xlsx</li>
+                <li>C:\Users\JohnDoe\Downloads\CryptoWallet.dat</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        [ QOps / AP3X Recon Group ]<br>
+        MITRE ATT&CK T1486 | CryptoLocker Simulation | Red Team Payload UI
+    </div>
+
+    <script>
+        function copyText(text) {
+            navigator.clipboard.writeText(text);
+            alert("Copied to clipboard: " + text);
+        }
+
+        // Countdown Timer
+        let duration = 7199; // seconds (1h 59min 59s)
+        let timerElement = document.getElementById('timer');
+
+        function updateCountdown() {
+            let hrs = Math.floor(duration / 3600);
+            let mins = Math.floor((duration % 3600) / 60);
+            let secs = duration % 60;
+            timerElement.textContent = 
+                `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            duration--;
+            if (duration < 0) clearInterval(timer);
+        }
+
+        let timer = setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
