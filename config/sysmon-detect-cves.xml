@@ -1,0 +1,48 @@
+<Sysmon schemaversion="4.50">
+  <HashAlgorithms>sha256</HashAlgorithms>
+  <EventFiltering>
+    <!-- PrintNightmare -->
+    <ProcessCreate onmatch="include">
+      <Image condition="end with">rundll32.exe</Image>
+      <CommandLine condition="contains">spoolsv</CommandLine>
+    </ProcessCreate>
+    <ProcessCreate onmatch="include">
+      <Image condition="end with">rundll32.exe</Image>
+      <CommandLine condition="contains">RpcAddPrinterDriverEx</CommandLine>
+    </ProcessCreate>
+
+    <!-- HiveNightmare -->
+    <FileCreate onmatch="include">
+      <TargetFilename condition="end with">\Windows\System32\config\SAM</TargetFilename>
+    </FileCreate>
+    <FileCreate onmatch="include">
+      <TargetFilename condition="end with">\Windows\System32\config\SYSTEM</TargetFilename>
+    </FileCreate>
+    <FileCreate onmatch="include">
+      <TargetFilename condition="end with">\Windows\System32\config\SECURITY</TargetFilename>
+    </FileCreate>
+
+    <!-- SpoolFool -->
+    <ProcessCreate onmatch="include">
+      <Image condition="end with">cmd.exe</Image>
+      <CommandLine condition="contains">icacls</CommandLine>
+      <CommandLine condition="contains">\spool\drivers</CommandLine>
+    </ProcessCreate>
+    <ProcessCreate onmatch="include">
+      <Image condition="end with">powershell.exe</Image>
+      <CommandLine condition="contains">takeown</CommandLine>
+      <CommandLine condition="contains">\spool\drivers</CommandLine>
+    </ProcessCreate>
+
+    <!-- Reflective DLL Injection -->
+    <ImageLoad onmatch="include">
+      <ImageLoaded condition="contains">.dll</ImageLoaded>
+      <Signed condition="is">false</Signed>
+    </ImageLoad>
+    <ProcessAccess onmatch="include">
+      <CallTrace condition="contains">VirtualAlloc</CallTrace>
+      <CallTrace condition="contains">WriteProcessMemory</CallTrace>
+      <CallTrace condition="contains">CreateRemoteThread</CallTrace>
+    </ProcessAccess>
+  </EventFiltering>
+</Sysmon>

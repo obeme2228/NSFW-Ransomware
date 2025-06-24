@@ -1,0 +1,102 @@
+<Sysmon schemaversion="4.50">
+  <HashAlgorithms>sha256</HashAlgorithms>
+  <EventFiltering>
+    <!-- CVE-2021-34527 - PrintNightmare -->
+    <RuleGroup name="PrintNightmare - CVE-2021-34527" groupRelation="or">
+      <ProcessCreate onmatch="include">
+        <Image condition="end with">rundll32.exe</Image>
+        <CommandLine condition="contains">spoolsv</CommandLine>
+      </ProcessCreate>
+      <ProcessCreate onmatch="include">
+        <Image condition="end with">rundll32.exe</Image>
+        <CommandLine condition="contains">RpcAddPrinterDriverEx</CommandLine>
+      </ProcessCreate>
+    </RuleGroup>
+
+    <!-- CVE-2021-36934 - HiveNightmare -->
+    <RuleGroup name="HiveNightmare - CVE-2021-36934" groupRelation="or">
+      <FileCreate onmatch="include">
+        <TargetFilename condition="end with">\Windows\System32\config\SAM</TargetFilename>
+      </FileCreate>
+      <FileCreate onmatch="include">
+        <TargetFilename condition="end with">\Windows\System32\config\SYSTEM</TargetFilename>
+      </FileCreate>
+      <FileCreate onmatch="include">
+        <TargetFilename condition="end with">\Windows\System32\config\SECURITY</TargetFilename>
+      </FileCreate>
+    </RuleGroup>
+
+    <!-- CVE-2022-21999 - SpoolFool -->
+    <RuleGroup name="SpoolFool - CVE-2022-21999" groupRelation="or">
+      <ProcessCreate onmatch="include">
+        <Image condition="end with">cmd.exe</Image>
+        <CommandLine condition="contains">icacls</CommandLine>
+        <CommandLine condition="contains">\spool\drivers</CommandLine>
+      </ProcessCreate>
+      <ProcessCreate onmatch="include">
+        <Image condition="end with">powershell.exe</Image>
+        <CommandLine condition="contains">takeown</CommandLine>
+        <CommandLine condition="contains">\spool\drivers</CommandLine>
+      </ProcessCreate>
+    </RuleGroup>
+
+    <!-- Reflective DLL Injection -->
+    <RuleGroup name="Reflective DLL Injection" groupRelation="or">
+      <ImageLoad onmatch="include">
+        <ImageLoaded condition="contains">.dll</ImageLoaded>
+        <Signed condition="is">false</Signed>
+      </ImageLoad>
+      <ProcessAccess onmatch="include">
+        <CallTrace condition="contains">VirtualAlloc</CallTrace>
+        <CallTrace condition="contains">WriteProcessMemory</CallTrace>
+        <CallTrace condition="contains">CreateRemoteThread</CallTrace>
+      </ProcessAccess>
+    </RuleGroup>
+
+    <!-- Popup Ransom Note -->
+    <RuleGroup name="Ransom Note Delivery" groupRelation="or">
+      <ProcessCreate onmatch="include">
+        <Image condition="end with">notepad.exe</Image>
+        <CommandLine condition="contains">readme</CommandLine>
+      </ProcessCreate>
+      <ProcessCreate onmatch="include">
+        <Image condition="end with">cmd.exe</Image>
+        <CommandLine condition="contains">echo</CommandLine>
+        <CommandLine condition="contains">decrypt</CommandLine>
+      </ProcessCreate>
+      <ProcessCreate onmatch="include">
+        <Image condition="end with">mshta.exe</Image>
+        <CommandLine condition="contains">file:///</CommandLine>
+      </ProcessCreate>
+      <ProcessCreate onmatch="include">
+        <Image condition="end with">powershell.exe</Image>
+        <CommandLine condition="contains">Add-Type</CommandLine>
+        <CommandLine condition="contains">System.Windows.Forms</CommandLine>
+      </ProcessCreate>
+    </RuleGroup>
+
+    <!-- XOR Encryption/Obfuscation -->
+    <RuleGroup name="XOR Encryption/Obfuscation" groupRelation="or">
+      <ProcessCreate onmatch="include">
+        <CommandLine condition="contains">xor</CommandLine>
+      </ProcessCreate>
+      <ProcessCreate onmatch="include">
+        <CommandLine condition="contains">0x</CommandLine>
+        <CommandLine condition="contains">^</CommandLine>
+      </ProcessCreate>
+      <ProcessCreate onmatch="include">
+        <Image condition="end with">powershell.exe</Image>
+        <CommandLine condition="contains">FromBase64String</CommandLine>
+        <CommandLine condition="contains">byte[]</CommandLine>
+      </ProcessCreate>
+    </RuleGroup>
+
+    <!-- Noise Reduction -->
+    <RuleGroup name="Noise Reduction" groupRelation="or">
+      <ProcessCreate onmatch="exclude">
+        <Image condition="end with">\Windows\System32\svchost.exe</Image>
+      </ProcessCreate>
+    </RuleGroup>
+
+  </EventFiltering>
+</Sysmon>
